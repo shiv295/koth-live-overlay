@@ -1,29 +1,28 @@
 <!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Digi — Ultimate King of the Hill</title>
-<style>
-:root{--gold:#f5c84b;--bg:#07070b;--panel:#11111a;--line:#29293a;--muted:#9c9cac;--white:#fff}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:transparent;color:var(--white);font-family:Inter,Arial,sans-serif}
-body{padding:28px}.wrap{max-width:1200px;margin:auto}.head{text-align:center}.eyebrow{font-size:13px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}.head h1{margin:6px 0 20px;font-size:44px;font-weight:950;text-shadow:0 5px 28px rgba(245,200,75,.2)}
-.tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}.tab{border:1px solid var(--line);background:rgba(17,17,26,.94);color:var(--muted);padding:10px 15px;border-radius:999px;font-weight:850}.tab.active{background:var(--gold);border-color:var(--gold);color:#111}
-.card{background:rgba(17,17,26,.94);border:1px solid var(--line);border-radius:22px;padding:20px}.king{display:flex;align-items:end;justify-content:space-between;padding:18px;border-radius:18px;margin-bottom:14px;border:1px solid rgba(245,200,75,.25);background:linear-gradient(135deg,rgba(245,200,75,.14),rgba(255,255,255,.02))}.kingname{font-size:30px;font-weight:950}.kingwin{font-size:34px;color:var(--gold);font-weight:950}.rows{display:grid;gap:8px}.row{display:grid;grid-template-columns:38px 1fr auto;gap:10px;align-items:center;background:#0c0c13;border:1px solid #1e1e2b;border-radius:12px;padding:11px 13px}.rank{color:var(--muted);font-weight:900}.name{font-weight:800}.win{color:var(--gold);font-weight:900;font-variant-numeric:tabular-nums}.final{display:grid;grid-template-columns:1fr 1fr;gap:14px}.box{text-align:center;border:1px solid var(--line);border-radius:18px;padding:18px}.box .cat{font-size:12px;color:var(--muted);letter-spacing:.14em}.box .name{font-size:28px;margin:7px 0}.box .win{font-size:24px}.crown{text-align:center;margin-bottom:15px;padding:25px;border-radius:20px;border:1px solid rgba(245,200,75,.35);background:linear-gradient(135deg,rgba(245,200,75,.16),rgba(255,90,90,.08))}.crown .champ{font-size:46px;font-weight:950;margin:4px}.crown .score{font-size:28px;color:var(--gold);font-weight:900}.foot{text-align:center;color:var(--muted);font-size:12px;margin-top:12px}
-@media(max-width:700px){body{padding:14px}.head h1{font-size:32px}.final{grid-template-columns:1fr}.kingname{font-size:23px}}
-</style></head>
-<body><div class="wrap"><div class="head"><div class="eyebrow">Digi Presents</div><h1>👑 ULTIMATE KING OF THE HILL 👑</h1></div>
-<div class="tabs"><button class="tab active" data-v="sub">PAID SUBS + GIFTERS</button><button class="tab" data-v="non">NON-SUB KOTH</button><button class="tab" data-v="final">FINAL BATTLE</button></div>
-<div id="app"></div><div class="foot">Actual win determines the king</div></div>
-<script>
-const demo={sub:[],non:[],final:[]};let view='sub';
-function state(){try{return JSON.parse(localStorage.getItem('kothState'))||demo}catch(e){return demo}}
-function sort(a){return [...(a||[])].sort((a,b)=>(+b.win||0)- (+a.win||0))}
-function money(v){return '$'+(+v||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
-function king(a){return sort(a)[0]||{name:'—',win:0}}
-function rows(a){return sort(a).map((x,i)=>'<div class="row"><div class="rank">'+(i+1)+'</div><div class="name">'+esc(x.name)+'</div><div class="win">'+money(x.win)+'</div></div>').join('')||'<div class="foot">Waiting for results…</div>'}
-function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
-function render(){let d=state(),a=sort(d[view]||[]),root=document.getElementById('app');
-if(view==='final'){let sk=king(d.sub),nk=king(d.non),fk=king(d.final);root.innerHTML='<div class="card"><div class="crown"><div class="eyebrow">ULTIMATE CROWN</div><div class="champ">'+esc(fk.name)+'</div><div class="score">'+(fk.name==='—'?'Awaiting final battle':money(fk.win))+'</div></div><div class="final"><div class="box"><div class="cat">SUB KING 👑</div><div class="name">'+esc(sk.name)+'</div><div class="win">'+money(sk.win)+'</div></div><div class="box"><div class="cat">NON-SUB KING 👑</div><div class="name">'+esc(nk.name)+'</div><div class="win">'+money(nk.win)+'</div></div></div><div style="height:15px"></div><div class="rows">'+rows(d.final)+'</div></div>';return}
-let title=view==='sub'?'PAID SUBS + GIFTERS KOTH':'NON-SUB KOTH',k=king(a);
-root.innerHTML='<div class="card"><div class="eyebrow">'+title+'</div><div class="king"><div><div class="eyebrow">CURRENT KING</div><div class="kingname">'+esc(k.name)+'</div></div><div class="kingwin">'+money(k.win)+'</div></div><div class="rows">'+rows(a)+'</div></div>'}
-document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');view=b.dataset.v;render()});setInterval(render,1000);render();
-</script></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Digi - Ultimate King of the Hill</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="overlay">
+  <main class="wrap">
+    <header class="head">
+      <div class="eyebrow">Digi Presents</div>
+      <h1>Ultimate King of the Hill</h1>
+    </header>
+
+    <nav class="tabs" aria-label="KOTH stages">
+      <button class="tab active" data-stage="sub" type="button">Paid Subs + Gifters</button>
+      <button class="tab" data-stage="non" type="button">Non-Sub KOTH</button>
+      <button class="tab" data-stage="final" type="button">Final Battle</button>
+    </nav>
+
+    <section id="app" aria-live="polite"></section>
+    <p class="foot" id="syncStatus">Connecting live scores...</p>
+  </main>
+
+  <script type="module" src="overlay.js"></script>
+</body>
+</html>

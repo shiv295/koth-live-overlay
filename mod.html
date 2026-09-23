@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Digi KOTH - Mod Control Panel</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="control">
+  <main class="control-shell">
+    <header class="control-head">
+      <div>
+        <div class="eyebrow">Digi KOTH</div>
+        <h1>Mod Control Panel</h1>
+      </div>
+      <div class="auth">
+        <span id="authState">Local preview mode</span>
+        <button class="ghost" id="signInBtn" type="button">Sign in</button>
+        <button class="ghost hidden" id="signOutBtn" type="button">Sign out</button>
+      </div>
+    </header>
+
+    <section class="notice" id="setupNotice">
+      Firebase is not configured yet. This panel will work only in this browser until
+      <code>firebase-config.js</code> is connected to a Firebase Realtime Database project.
+    </section>
+
+    <section class="toolbar">
+      <label>
+        Live stage
+        <select id="activeStage">
+          <option value="sub">Paid Subs + Gifters KOTH</option>
+          <option value="non">Non-Sub KOTH</option>
+          <option value="final">Final Battle</option>
+        </select>
+      </label>
+      <button class="primary" id="publishStage" type="button">Switch Live Stage</button>
+      <button class="danger" id="resetCurrent" type="button">Clear Current Stage</button>
+      <button class="danger" id="resetAll" type="button">Reset Everything</button>
+    </section>
+
+    <section class="stage-tabs" aria-label="Edit stage">
+      <button class="stage-tab active" data-stage="sub" type="button">Paid Subs + Gifters</button>
+      <button class="stage-tab" data-stage="non" type="button">Non-Sub KOTH</button>
+      <button class="stage-tab" data-stage="final" type="button">Final Battle</button>
+    </section>
+
+    <section class="editor">
+      <header class="editor-head">
+        <div>
+          <div class="eyebrow" id="stageLabel">Paid Subs + Gifters KOTH</div>
+          <h2 id="kingLabel">Waiting for results</h2>
+        </div>
+        <button class="primary" id="addPlayer" type="button">Add Player</button>
+      </header>
+
+      <div class="table" role="table" aria-label="KOTH results">
+        <div class="table-row table-head" role="row">
+          <div>Rank</div>
+          <div>Kick name</div>
+          <div>Actual win</div>
+          <div></div>
+        </div>
+        <div id="playerRows"></div>
+      </div>
+    </section>
+
+    <p class="panel-foot" id="saveState">Ready</p>
+  </main>
+
+  <script type="module" src="mod.js"></script>
+</body>
+</html>

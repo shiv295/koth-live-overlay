@@ -1,0 +1,11 @@
+{
+  "rules": {
+    "events": {
+      "digi-ultimate-koth": {
+        ".read": true,
+        ".write": "auth != null && auth.uid === 'PASTE_MOD_UID_HERE'",
+        ".validate": "newData.hasChildren(['activeStage', 'stages', 'updatedAt'])"
+      }
+    }
+  }
+}
