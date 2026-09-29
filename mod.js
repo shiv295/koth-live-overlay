@@ -27,7 +27,8 @@ let state = normalizeState(null);
 let editStage = 'sub';
 let saveTimer;
 let editingInput = false;
-let pendingRender = false;
+let saving = false;
+let pendingRemote = null;
 
 boot();
 
@@ -39,11 +40,11 @@ async function boot() {
 
   store.subscribe(
     next => {
-      state = next;
-      if (editingInput || isEditingInput()) {
-        pendingRender = true;
+      if (editingInput || isEditingInput() || saveTimer || saving) {
+        pendingRemote = next;
         return;
       }
+      state = next;
       render();
     },
     error => setSaveState(error.message || 'Live sync error')
@@ -163,25 +164,38 @@ playerRows.addEventListener('focusout', event => {
   if (!event.target.matches('.name-input, .win-input')) return;
   setTimeout(() => {
     editingInput = isEditingInput();
-    if (!editingInput && pendingRender) {
-      pendingRender = false;
-      render();
-    }
+    flushRemote();
   }, 0);
 });
 
 function debouncedSave(message) {
   clearTimeout(saveTimer);
   setSaveState('Saving...');
-  saveTimer = setTimeout(() => save(message), 350);
+  saveTimer = setTimeout(() => {
+    saveTimer = null;
+    save(message);
+  }, 350);
+}
+
+function flushRemote() {
+  if (editingInput || isEditingInput() || saveTimer || saving) return;
+  if (pendingRemote) {
+    state = pendingRemote;
+    pendingRemote = null;
+    render();
+  }
 }
 
 async function save(message) {
+  saving = true;
   try {
     await store.save(state);
     setSaveState(message);
   } catch (error) {
     setSaveState(error.message || 'Save failed');
+  } finally {
+    saving = false;
+    flushRemote();
   }
 }
 
