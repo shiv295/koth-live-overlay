@@ -38,7 +38,7 @@ async function boot() {
   store.subscribe(
     next => {
       state = next;
-      render();
+      if (!isEditingInput()) render();
     },
     error => setSaveState(error.message || 'Live sync error')
   );
@@ -60,7 +60,7 @@ publishStage.addEventListener('click', () => {
 });
 
 resetCurrent.addEventListener('click', () => {
-  if (!confirm(`Clear all players from ${STAGES[editStage]}?`)) return;
+  if (!confirm('Clear all players from ' + STAGES[editStage] + '?')) return;
   state.stages[editStage] = [];
   save('Current stage cleared');
 });
@@ -93,12 +93,12 @@ function renderAuth(user) {
   signInBtn.hidden = Boolean(user);
   signOutBtn.hidden = !user;
   authState.textContent = user
-    ? `Signed in: ${user.email || user.uid}`
+    ? 'Signed in: ' + (user.email || user.uid)
     : 'Sign in to publish';
 
   if (user) {
     setupNotice.hidden = false;
-    setupNotice.innerHTML = `Signed in. If saves are blocked, add this UID to your Firebase rules: <code>${user.uid}</code>`;
+    setupNotice.innerHTML = 'Signed in. If saves are blocked, add this UID to your Firebase rules: <code>' + user.uid + '</code>';
   }
 }
 
@@ -109,18 +109,20 @@ function render() {
 
   const sorted = sortPlayers(state.stages[editStage]);
   const king = sorted[0];
-  kingLabel.textContent = king ? `${king.name || 'Unnamed player'} is leading with ${money(king.win)}` : 'Waiting for results';
+  kingLabel.textContent = king
+    ? (king.name || 'Unnamed player') + ' is leading with ' + money(king.win)
+    : 'Waiting for results';
 
   playerRows.innerHTML = state.stages[editStage].map(player => {
     const rank = sorted.findIndex(item => item.id === player.id) + 1 || '-';
-    return `
-      <div class="table-row" data-id="${player.id}">
-        <div class="rank">${rank}</div>
-        <input class="name-input" value="${attr(player.name)}" placeholder="Kick name" aria-label="Kick name">
-        <input class="win-input" value="${attr(player.win)}" inputmode="decimal" aria-label="Actual win">
-        <button class="icon-danger" type="button" aria-label="Remove player">Remove</button>
-      </div>
-    `;
+    return [
+      '<div class="table-row" data-id="' + player.id + '">',
+      '<div class="rank">' + rank + '</div>',
+      '<input class="name-input" value="' + attr(player.name) + '" placeholder="Kick name" aria-label="Kick name">',
+      '<input class="win-input" value="' + attr(player.win) + '" inputmode="decimal" aria-label="Actual win">',
+      '<button class="icon-danger" type="button" aria-label="Remove player">Remove</button>',
+      '</div>'
+    ].join('');
   }).join('') || '<div class="empty table-empty">No players yet</div>';
 
   bindRows();
@@ -157,10 +159,14 @@ async function save(message) {
   try {
     await store.save(state);
     setSaveState(message);
-    render();
   } catch (error) {
     setSaveState(error.message || 'Save failed');
   }
+}
+
+function isEditingInput() {
+  const active = document.activeElement;
+  return active?.classList.contains('name-input') || active?.classList.contains('win-input');
 }
 
 function setSaveState(message) {
