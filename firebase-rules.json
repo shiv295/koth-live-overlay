@@ -3,7 +3,7 @@
     "events": {
       "digi-ultimate-koth": {
         ".read": true,
-        ".write": "auth != null && auth.uid === 'PASTE_MOD_UID_HERE'",
+        ".write": "auth != null && auth.token.email == 'shivrocks295@gmail.com' && auth.token.email_verified == true",
         ".validate": "newData.hasChildren(['activeStage', 'stages', 'updatedAt'])"
       }
     }
