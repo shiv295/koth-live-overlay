@@ -26,6 +26,8 @@ let store;
 let state = normalizeState(null);
 let editStage = 'sub';
 let saveTimer;
+let editingInput = false;
+let pendingRender = false;
 
 boot();
 
@@ -38,7 +40,11 @@ async function boot() {
   store.subscribe(
     next => {
       state = next;
-      if (!isEditingInput()) render();
+      if (editingInput || isEditingInput()) {
+        pendingRender = true;
+        return;
+      }
+      render();
     },
     error => setSaveState(error.message || 'Live sync error')
   );
@@ -148,6 +154,21 @@ function bindRows() {
     });
   });
 }
+
+playerRows.addEventListener('focusin', event => {
+  if (event.target.matches('.name-input, .win-input')) editingInput = true;
+});
+
+playerRows.addEventListener('focusout', event => {
+  if (!event.target.matches('.name-input, .win-input')) return;
+  setTimeout(() => {
+    editingInput = isEditingInput();
+    if (!editingInput && pendingRender) {
+      pendingRender = false;
+      render();
+    }
+  }, 0);
+});
 
 function debouncedSave(message) {
   clearTimeout(saveTimer);
