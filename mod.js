@@ -99,6 +99,8 @@ function renderAuth(user) {
 
   signInBtn.hidden = Boolean(user);
   signOutBtn.hidden = !user;
+  signInBtn.classList.toggle('hidden', Boolean(user));
+  signOutBtn.classList.toggle('hidden', !user);
   authState.textContent = user
     ? 'Signed in: ' + (user.email || user.uid)
     : 'Sign in to publish';
