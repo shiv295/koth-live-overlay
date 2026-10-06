@@ -68,13 +68,32 @@ publishStage.addEventListener('click', () => {
 
 resetCurrent.addEventListener('click', () => {
   if (!confirm('Clear all players from ' + STAGES[editStage] + '?')) return;
+  clearTimeout(saveTimer);
+  saveTimer = null;
+  pendingRemote = null;
   state.stages[editStage] = [];
+  render();
   save('Current stage cleared');
 });
 
 resetAll.addEventListener('click', () => {
   if (!confirm('Reset every KOTH stage and live score?')) return;
-  state = normalizeState(null);
+  clearTimeout(saveTimer);
+  saveTimer = null;
+  pendingRemote = null;
+  state = normalizeState({
+    ...state,
+    mode: 'koth',
+    activeStage: 'sub',
+    stages: {
+      sub: [],
+      non: [],
+      final: []
+    },
+    updatedAt: Date.now()
+  });
+  editStage = 'sub';
+  render();
   save('Everything reset');
 });
 
