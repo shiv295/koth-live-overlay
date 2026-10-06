@@ -5,6 +5,11 @@
         ".read": true,
         ".write": "auth != null && auth.token.email == 'shivrocks295@gmail.com' && auth.token.email_verified == true",
         ".validate": "newData.hasChildren(['activeStage', 'stages', 'updatedAt'])"
+      },
+      "digi-secondary-koth": {
+        ".read": true,
+        ".write": "auth != null && auth.token.email == 'shivrocks295@gmail.com' && auth.token.email_verified == true",
+        ".validate": "newData.hasChildren(['players', 'updatedAt'])"
       }
     }
   }
