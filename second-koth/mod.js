@@ -15,6 +15,8 @@ let state = normalizeState(null);
 let saveTimer;
 let editingInput = false;
 let pendingRender = false;
+let pendingRemoteState = null;
+let localChangesPending = false;
 
 boot();
 
@@ -24,11 +26,12 @@ async function boot() {
   setupNotice.hidden = store.mode !== 'firebase';
   store.onAuthChange?.(renderAuth);
   store.subscribe(next => {
-    state = next;
     if (editingInput || isEditingInput()) {
+      pendingRemoteState = next;
       pendingRender = true;
       return;
     }
+    state = next;
     render();
   }, error => setSaveState(error.message || 'Live sync error'));
 }
@@ -87,10 +90,12 @@ function bindRows() {
     if (!player) return;
     row.querySelector('.name-input').addEventListener('input', event => {
       player.name = event.target.value;
+      localChangesPending = true;
       debouncedSave('Player updated');
     });
     row.querySelector('.win-input').addEventListener('input', event => {
       player.win = parseMoney(event.target.value);
+      localChangesPending = true;
       debouncedSave('Player updated');
     });
     row.querySelector('.remove-player').addEventListener('click', () => {
@@ -108,10 +113,7 @@ playerRows.addEventListener('focusout', event => {
   if (!event.target.matches('.name-input, .win-input')) return;
   setTimeout(() => {
     editingInput = isEditingInput();
-    if (!editingInput && pendingRender) {
-      pendingRender = false;
-      render();
-    }
+    flushPendingRender();
   }, 0);
 });
 
@@ -124,10 +126,20 @@ function debouncedSave(message) {
 async function save(message) {
   try {
     await store.save(state);
+    localChangesPending = false;
     setSaveState(message);
+    flushPendingRender();
   } catch (error) {
     setSaveState(error.message || 'Save failed');
   }
+}
+
+function flushPendingRender() {
+  if (editingInput || isEditingInput() || localChangesPending || !pendingRender) return;
+  state = pendingRemoteState || state;
+  pendingRemoteState = null;
+  pendingRender = false;
+  render();
 }
 
 function isEditingInput() {
