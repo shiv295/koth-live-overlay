@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Digi - Second KOTH Control</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="control">
+  <main class="control-shell">
+    <header class="control-head">
+      <div>
+        <div class="eyebrow">Digi KOTH</div>
+        <h1>Second KOTH Control</h1>
+      </div>
+      <div class="auth">
+        <span id="authState">Checking sign-in...</span>
+        <button id="signInBtn" type="button">Sign in</button>
+        <button id="signOutBtn" class="hidden" type="button">Sign out</button>
+      </div>
+    </header>
+    <section class="notice" id="setupNotice" hidden>Sign in with the approved Google account to publish live changes.</section>
+    <section class="toolbar">
+      <button class="primary" id="addPlayer" type="button">Add Player</button>
+      <button class="danger" id="resetAll" type="button">Clear KOTH</button>
+    </section>
+    <section class="editor">
+      <header class="editor-head">
+        <div>
+          <div class="eyebrow">One live KOTH</div>
+          <h2 id="kingLabel">Waiting for results</h2>
+        </div>
+      </header>
+      <div class="table" role="table" aria-label="Second KOTH results">
+        <div class="head-row" role="row"><div>Rank</div><div>Kick name</div><div>Actual win</div><div></div></div>
+        <div id="playerRows"></div>
+      </div>
+    </section>
+    <p class="panel-foot" id="saveState">Ready</p>
+  </main>
+  <script type="module" src="mod.js"></script>
+</body>
+</html>
+
